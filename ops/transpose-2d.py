@@ -18,7 +18,7 @@ def reshape_kernel(x_ptr, y_ptr, BLOCK_SIZE: tl.constexpr):
     tl.store(y_ptr + y_offsets, x)
 
 
-BLOCK_SIZE = 128
+BLOCK_SIZE = 64
 x = torch.arange((BLOCK_SIZE * BLOCK_SIZE), device="cuda", dtype=torch.long).view(
     (BLOCK_SIZE, BLOCK_SIZE)
 )

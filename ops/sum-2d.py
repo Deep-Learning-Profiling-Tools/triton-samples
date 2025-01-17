@@ -22,7 +22,7 @@ def sum_kernel(
 
 
 BLOCK_SIZE = 128
-CHANNEL_SIZE = 5
+CHANNEL_SIZE = 16
 x = torch.ones((BLOCK_SIZE, BLOCK_SIZE), device="cuda", dtype=torch.long)
 y = torch.zeros((BLOCK_SIZE), device="cuda", dtype=torch.long)
 z = torch.zeros((BLOCK_SIZE, BLOCK_SIZE), device="cuda", dtype=torch.long)

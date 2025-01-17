@@ -9,7 +9,7 @@ def kernel2(in_ptr0, out_ptr5, xnumel: tl.constexpr, XBLOCK: tl.constexpr):
     xindex = xoffset + tl.reshape(tl.arange(0, XBLOCK), [XBLOCK])
     xmask = xindex < xnumel
     tmp2 = tl.load(in_ptr0 + xindex, xmask)
-    tmp39 = tl.libdevice.log(tmp2)
+    tmp39 = tl.extra.cuda.libdevice.log(tmp2)
     tl.store(out_ptr5 + xindex, tmp39, xmask)
 
 
