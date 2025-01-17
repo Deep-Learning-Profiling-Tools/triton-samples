@@ -15,7 +15,8 @@ class Node:
 # Test serialization
 src = ""
 node = Node(0, 0)
-error = triton.code_gen.CompilationError(src, node)
+error = triton.CompilationError(src, node)
 
 pickled = pickle.dumps(error)
-original = pickle.loads(pickled)
+origin = pickle.loads(pickled)
+print(origin)
