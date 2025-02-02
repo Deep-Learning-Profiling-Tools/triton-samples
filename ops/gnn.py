@@ -34,7 +34,7 @@ def gnn_kernel(
 # Constants
 BLOCK_SIZE = 32
 N = 32
-C = 9  # Note: C=4 works correctly, C=12 causes errors, C=9 has partial results
+C = 4  # Note: C=4 works correctly, C=12 causes errors, C=9 has partial results
 
 index = torch.arange(N, device="cuda", dtype=torch.int)
 x = (
