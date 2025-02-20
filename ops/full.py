@@ -15,7 +15,7 @@ def kernel1(x_ptr, y_ptr, BLOCK_SIZE: tl.constexpr):
     x_offset = x_ptr + tid
     y_offset = y_ptr + tid
     lhs = tl.load(x_offset)
-    rhs = tl.full([BLOCK_SIZE, BLOCK_SIZE], 1.5, tl.float16)
+    rhs = tl.full([BLOCK_SIZE, BLOCK_SIZE], 1.5, tl.float32)
     tl.store(y_offset, tl.dot(lhs, rhs).to(tl.float32))
 
 
@@ -29,12 +29,12 @@ def kernel2(x_ptr, y_ptr, BLOCK_SIZE: tl.constexpr):
     x_offset = x_ptr + tid
     y_offset = y_ptr + tid
     lhs = tl.load(x_offset)
-    rhs = (tl.zeros([BLOCK_SIZE, BLOCK_SIZE], dtype=tl.float16) + 1.5).to(tl.float16)
+    rhs = (tl.zeros([BLOCK_SIZE, BLOCK_SIZE], dtype=tl.float32) + 1.5).to(tl.float32)
     tl.store(y_offset, tl.dot(lhs, rhs).to(tl.float32))
 
 
 BLOCK_SIZE = 128
-x = torch.randn((BLOCK_SIZE, BLOCK_SIZE), device="cuda", dtype=torch.float16)
+x = torch.randn((BLOCK_SIZE, BLOCK_SIZE), device="cuda", dtype=torch.float32)
 y_0 = torch.zeros((BLOCK_SIZE, BLOCK_SIZE), device="cuda", dtype=torch.float32)
 y_1 = torch.zeros((BLOCK_SIZE, BLOCK_SIZE), device="cuda", dtype=torch.float32)
 for _ in range(100):
