@@ -34,18 +34,18 @@ BLOCK_SIZE = 512
 for dtype in [torch.float8_e5m2, torch.float16]:
     for c in [4, 8, 16, 32, 64]:
         x = torch.randn((BLOCK_SIZE, c), device="cuda").to(dtype)
-    idx = torch.randint(
-        0,
-        c,
-        (
-            BLOCK_SIZE,
+        idx = torch.randint(
+            0,
             c,
-        ),
-        device="cuda",
-    ).to(torch.int32)
-    y = torch.zeros_like(x)
-    with proton.scope(f"{dtype}_{c}"):
-        kernel[(1,)](x, idx, y, 1, BLOCK_SIZE, c)
+            (
+                BLOCK_SIZE,
+                c,
+            ),
+            device="cuda",
+        ).to(torch.int32)
+        y = torch.zeros_like(x)
+        with proton.scope(f"{dtype}_{c}"):
+            kernel[(1,)](x, idx, y, 1, BLOCK_SIZE, c)
 
     y_ref = x.to(torch.float16).gather(1, idx.to(torch.int64))
     torch.testing.assert_close(y.to(torch.float16), y_ref, rtol=1e-2, atol=1e-2)
