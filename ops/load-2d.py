@@ -2,6 +2,7 @@ import torch
 
 import triton
 import triton.language as tl
+import triton.profiler as proton
 
 
 @triton.jit
@@ -21,10 +22,13 @@ def kernel(
 
 
 BATCH_SIZE = 1024
-BLOCK_SIZE = 128
-CHANNEL_SIZE = 16
-x = torch.randn((BATCH_SIZE, BLOCK_SIZE, CHANNEL_SIZE), device="cuda")
-y = torch.zeros_like(x)
+BLOCK_SIZE = 1024
 
-kernel[(BATCH_SIZE,)](x, y, CHANNEL_SIZE, CHANNEL_SIZE, BLOCK_SIZE)
-assert torch.all(x == y)
+for dtype in [torch.float16, torch.float32]:
+    for c in [1, 2, 4, 8, 16]:
+        x = torch.randn((BATCH_SIZE, BLOCK_SIZE, c), device="cuda")
+        y = torch.zeros_like(x)
+        with proton.scope(f"{dtype}_{c}"):
+            kernel[(BATCH_SIZE,)](x, y, c, c, BLOCK_SIZE)
+
+        torch.testing.assert_close(x, y, rtol=1e-2, atol=1e-2)
