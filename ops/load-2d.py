@@ -21,7 +21,7 @@ def kernel(
 BATCH_SIZE = 512
 BLOCK_SIZE = 512
 
-for dtype in [torch.float16, torch.float32]:
+for dtype in [torch.float8_e4m3fn, torch.float16]:
     for c in [1, 2, 4, 8, 16]:
         x = torch.randn((BATCH_SIZE, BLOCK_SIZE, c), device="cuda", dtype=dtype)
         y = torch.zeros_like(x)
