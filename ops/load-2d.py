@@ -25,19 +25,16 @@ def kernel(
 
 
 BATCH_SIZE = 512
-BLOCK_SIZE = 64
-CHANNEL_SIZE = 64
+BLOCK_SIZE = 512
 
 for dtype in [torch.float16, torch.float32]:
     for c0 in [1, 2, 4, 8]:
         for c1 in [1, 2, 4, 8]:
-            x = torch.randn((BATCH_SIZE, BLOCK_SIZE, CHANNEL_SIZE), device="cuda")
+            x = torch.randn((BATCH_SIZE, BLOCK_SIZE, c1), device="cuda")
             y = torch.zeros_like(x)
             with proton.scope(
                 f"{dtype}_{c0}_{c1}", {"bytes": x.nelement() * x.element_size() * 2}
             ):
-                kernel[(BATCH_SIZE,)](
-                    x, y, CHANNEL_SIZE, CHANNEL_SIZE, BLOCK_SIZE, c0, c1
-                )
+                kernel[(BATCH_SIZE,)](x, y, c1, c1, BLOCK_SIZE, c0, c1)
 
             torch.testing.assert_close(x, y, rtol=1e-2, atol=1e-2)
