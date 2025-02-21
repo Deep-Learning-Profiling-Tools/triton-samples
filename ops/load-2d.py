@@ -21,7 +21,7 @@ def kernel(
     tl.store(y_ptr + offsets + pid * BLOCK_SIZE * CHANNEL_SIZE, x_val)
 
 
-BATCH_SIZE = 1024
+BATCH_SIZE = 10240
 BLOCK_SIZE = 1024
 
 for dtype in [torch.float16, torch.float32]:
