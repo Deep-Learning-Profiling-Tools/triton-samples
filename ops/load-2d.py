@@ -14,8 +14,8 @@ def kernel(
     BLOCK_SIZE: tl.constexpr,
 ):
     pid = tl.program_id(0)
-    offsets = tl.arange(0, BLOCK_SIZE * CHANNEL_SIZE).reshape(
-        [BLOCK_SIZE, CHANNEL_SIZE]
+    offsets = (
+        tl.arange(0, BLOCK_SIZE)[:, None] * STRIDE + tl.arange(0, CHANNEL_SIZE)[None, :]
     )
     x_val = tl.load(x_ptr + offsets + pid * BLOCK_SIZE * CHANNEL_SIZE)
     tl.store(y_ptr + offsets + pid * BLOCK_SIZE * CHANNEL_SIZE, x_val)
