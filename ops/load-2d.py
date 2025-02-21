@@ -29,10 +29,8 @@ for dtype in [torch.float16, torch.float32]:
         x = torch.randn((BATCH_SIZE, BLOCK_SIZE, c), device="cuda")
         y = torch.zeros_like(x)
         with proton.scope(
-            f"{dtype}_{c}", {"bytes": x.nelement() * x.element_size() * 2 * 10}
+            f"{dtype}_{c}", {"bytes": x.nelement() * x.element_size() * 2}
         ):
-            for _ in range(10):
-                _ = torch.randn((BATCH_SIZE, BLOCK_SIZE, c), device="cuda")
-                kernel[(BATCH_SIZE,)](x, y, c, c, BLOCK_SIZE)
+            kernel[(BATCH_SIZE,)](x, y, c, c, BLOCK_SIZE)
 
         torch.testing.assert_close(x, y, rtol=1e-2, atol=1e-2)
